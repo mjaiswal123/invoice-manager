@@ -28,22 +28,29 @@ public class InvoiceController {
     @Autowired
     InvoiceRepository repo;
 
+    /**
+     * This method finds the Invoice by ID, returns HttpStatus.NOT_FOUND if invoice not found.
+     * @param id
+     * @return
+     */
     @RequestMapping(
             path = "/invoice/{id}",
             method = RequestMethod.GET)
     // Get is default, we are not required to specify this
-    //public Invoice invoiceById(@PathVariable Long id) {
     public ResponseEntity<Invoice> invoiceById(@PathVariable Long id) {
 
         Invoice queriedInvoice = repo.findById(id);
-        if(queriedInvoice == null)
-        {
+        if(queriedInvoice == null) {
             return new ResponseEntity<Invoice>(HttpStatus.NOT_FOUND);
         }
-
         return new ResponseEntity<Invoice>(queriedInvoice,HttpStatus.OK);
     }
 
+    /**
+     * This creates Invoice, returns HttpStatus.BAD_REQUEST in required line Item is missing from request.
+     * @param invoiceRequestDO
+     * @return
+     */
     @RequestMapping(
             path = "/invoice",
             method = RequestMethod.POST, // Get is default, we are not required to specify this
@@ -56,10 +63,14 @@ public class InvoiceController {
             return new ResponseEntity<Invoice>(HttpStatus.BAD_REQUEST);
 
         Invoice savedInvoice = repo.save(invoiceRequestDO);
-
         return new ResponseEntity<Invoice>(savedInvoice,HttpStatus.OK);
     }
 
+    /**
+     * This method updates the Invoice, returns HttpStatus.BAD_REQUEST if missing the required parameter line Item
+     * @param invoiceRequestDO
+     * @return
+     */
     @RequestMapping(
             path = "/invoice/{id}",
             method = RequestMethod.PUT,
@@ -71,23 +82,26 @@ public class InvoiceController {
             return new ResponseEntity<Invoice>(HttpStatus.BAD_REQUEST);
 
         Invoice selectedInvoice = repo.findById(invoiceRequestDO.getId());
-        if(selectedInvoice == null)
-        {
+        if(selectedInvoice == null) {
             //Can't update a invoive which is not in system
             return null;
         }
 
         Invoice updateInvoice = repo.save(invoiceRequestDO);
-
-        if (updateInvoice == null)
-        {
+        if (updateInvoice == null) {
             return new ResponseEntity<Invoice>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
         return new ResponseEntity<Invoice>(updateInvoice,HttpStatus.OK);
     }
 
 
+    /**
+     * This method deletes a Invoice
+     * @param id
+     * @param invoiceRequestDO
+     * @return
+     * @throws Exception
+     */
     @RequestMapping(
             path = "/invoice/{id}",
             method = RequestMethod.DELETE,
@@ -96,10 +110,14 @@ public class InvoiceController {
             @PathVariable Long id,@RequestBody Invoice invoiceRequestDO) throws Exception {
 
         repo.delete(id);
-
         return new ResponseEntity<Invoice>(HttpStatus.OK);
     }
 
+    /**
+     * This method searches the Invoice by the name
+     * @param name
+     * @return
+     */
     @RequestMapping(path = "/invoice", method = RequestMethod.GET)
     public List<Invoice> getInvoicebyName(@RequestParam("name") String name
     ) {
@@ -110,6 +128,4 @@ public class InvoiceController {
             savedInvoices = repo.findByName(name);
         return savedInvoices;
     }
-
-
 }
