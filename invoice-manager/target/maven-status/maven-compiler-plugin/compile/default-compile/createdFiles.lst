@@ -1,0 +1,3 @@
+com/company/invoice/invoicemanager/controller/InvoiceController.class
+com/company/invoice/invoicemanager/dataobject/request/Invoice.class
+com/company/invoice/invoicemanager/app/InvoiceManagerApplication.class
